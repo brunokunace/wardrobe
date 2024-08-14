@@ -3,10 +3,10 @@
 </template>
 
 <script setup>
-import {onMounted, ref, watch} from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import * as THREE from 'three';
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 const target = ref();
 const fbxLoader = new FBXLoader();
@@ -22,6 +22,10 @@ const props = defineProps({
     default: '',
   },
   texture: {
+    type: String,
+    default: '',
+  },
+  model: {
     type: String,
     default: '',
   },
@@ -78,11 +82,12 @@ const createControls = () => {
 
 const loadModel = (fileName) => {
   fbxLoader.load(fileName, (object) => {
+    scene.remove(model);
     model = object;
 
-    model.scale.set(.0015, .0015, .0015)
-    model.position.y = - 1.6
-    scene.add(model)
+    model.scale.set(.0015, .0015, .0015);
+    model.position.y = - 1.6;
+    scene.add(model);
   });
 };
 
@@ -129,11 +134,16 @@ watch(
     (value) => changeTexture(value),
 );
 
+watch(
+    () => props.model,
+    (value) => loadModel(value),
+);
+
 onMounted(() => {
   createScene();
   createLights();
   createControls();
-  loadModel('models/dress.fbx');
+  loadModel(props.model);
   window.addEventListener( 'resize', onWindowResize );
 });
 </script>
