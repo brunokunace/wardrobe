@@ -52,12 +52,12 @@ const createScene = () => {
       0.1,
       1000
   );
-  camera.position.set(0.9, 0.8, 1.1)
+  camera.position.set(0.6, 0.8, 0.8)
 
   renderer = new THREE.WebGLRenderer({ alpha: true });
   renderer.setSize( window.innerWidth, window.innerHeight );
 
-// scene.add(new THREE.AxesHelper(5))
+  scene.add(new THREE.AxesHelper(5))
 
   target.value.appendChild(renderer.domElement);
   renderer.setAnimationLoop( animate );
@@ -86,8 +86,13 @@ const loadModel = (fileName) => {
     model = object;
 
     model.scale.set(.0015, .0015, .0015);
-    model.position.y = - 1.6;
     scene.add(model);
+
+    const boundingBox = new THREE.Box3().setFromObject(model);
+    const center = new THREE.Vector3();
+    boundingBox.getCenter(center);
+
+    model.position.sub(center);
   });
 };
 
